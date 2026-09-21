@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2333">
+<title>The Incredible Life Change — Series 1</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root{
+    --ink:#1B2333;
+    --ink-2:#242E44;
+    --parchment:#F5EEDD;
+    --parchment-2:#EFE6D0;
+    --charcoal:#2A241D;
+    --gold:#C9A24B;
+    --gold-soft:#E7D2A0;
+    --ember:#8B4A3D;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--ink); color:var(--parchment); font-family:var(--sans); height:100%;}
+  #root{min-height:100vh; display:flex; flex-direction:column;}
+  button{font-family:var(--sans); cursor:pointer;}
+  ::selection{background:var(--gold-soft); color:var(--ink);}
+  .app-body{flex:1; padding-bottom:78px;}
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:25;
+    background:var(--ink-2); border-top:1px solid rgba(201,162,75,0.25);
+    display:flex; padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .nav-btn{
+    flex:1; background:none; border:none; color:#8A90A3; display:flex; flex-direction:column;
+    align-items:center; gap:2px; font-size:10px; padding:6px 2px; border-radius:10px;
+    transition: color 0.2s ease, transform 0.15s ease;
+  }
+  .nav-btn.active{ color:var(--gold); }
+  .nav-btn:active{ transform:scale(0.92); }
+  .nav-icon{ font-size:19px; line-height:1; }
+
+  /* ---------- Shared ---------- */
+  .section-title{ font-family:var(--serif); font-style:italic; font-size:18px; color:var(--gold-soft); margin:22px 16px 10px;}
+  .card{ background:var(--ink-2); border-radius:14px; padding:16px 18px; margin:0 16px 12px; border:1px solid rgba(255,255,255,0.05);}
+  .btn-gold{
+    background:linear-gradient(180deg, var(--gold), #B58E3E); color:var(--ink); border:none;
+    border-radius:10px; padding:10px 16px; font-size:13px; font-weight:700;
+  }
+  .btn-gold:active{ transform:scale(0.97); }
+  .btn-ghost{ background:var(--ink); border:1px solid rgba(255,255,255,0.14); color:#C9CEDB; border-radius:10px; padding:9px 14px; font-size:12.5px;}
+  .btn-ghost:active{ transform:scale(0.97); }
+  .fade-in{ animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- Home ---------- */
+  .home-header{
+    background: radial-gradient(circle at 50% -10%, var(--ink-2), var(--ink) 65%);
+    padding: 30px 20px 20px; border-bottom:1px solid rgba(201,162,75,0.2);
+  }
+  .home-flame-row{ display:flex; align-items:center; gap:12px; }
+  .home-flame{ width:36px; height:auto; flex:0 0 auto; animation: flicker 2.6s ease-in-out infinite; transform-origin:50% 90%;}
+  @keyframes flicker{
+    0%,100%{ transform:scale(1) rotate(0deg); filter:brightness(1); }
+    25%{ transform:scale(1.04,0.97) rotate(-1.5deg); filter:brightness(1.08);}
+    50%{ transform:scale(0.97,1.04) rotate(1deg); filter:brightness(0.96);}
+    75%{ transform:scale(1.03,0.98) rotate(-0.5deg); filter:brightness(1.05);}
+  }
+  .home-greeting{ font-family:var(--serif); font-style:italic; font-size:20px; margin:0; color:var(--parchment);}
+  .home-streak{ font-size:12px; color:var(--gold); margin-top:2px;}
+  .home-eyebrow{ letter-spacing:0.18em; text-transform:uppercase; font-size:10px; color:#8A90A3; margin:0 0 6px;}
+  .today-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 16px 6px;}
+  .today-card{
+    background:var(--ink-2); border-radius:14px; padding:14px; border:1px solid rgba(255,255,255,0.05);
+    display:flex; flex-direction:column; gap:6px; min-height:90px;
+  }
+  .today-label{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold);}
+  .today-body{ font-size:12.5px; color:#D8DCE6; line-height:1.5; flex:1;}
+  .continue-card{
+    margin:14px 16px; background:linear-gradient(135deg, var(--ink-2), #2C3552);
+    border-radius:14px; padding:16px 18px; border:1px solid rgba(201,162,75,0.25);
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .continue-card .cc-title{ font-family:var(--serif); font-size:15px; color:var(--parchment); margin:0 0 3px;}
+  .continue-card .cc-sub{ font-size:11px; color:#9AA1B4; margin:0;}
+  .challenge-badge{
+    margin:0 16px 8px; display:flex; align-items:center; gap:10px; background:var(--ink-2);
+    border-radius:14px; padding:12px 16px; border:1px solid rgba(255,255,255,0.05);
+  }
+  .challenge-ring{
+    width:40px; height:40px; border-radius:50%; flex:0 0 auto;
+    background: conic-gradient(var(--gold) calc(var(--pct,0) * 1%), rgba(255,255,255,0.08) 0);
+    display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--parchment); font-weight:700;
+  }
+  .challenge-ring span{ background:var(--ink-2); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+
+  /* ---------- Chapter list ---------- */
+  .cover-eyebrow{
+    letter-spacing:0.22em; text-transform:uppercase; font-size:11px; color:var(--gold);
+    margin:0 0 10px;
+  }
+  .cover-title{
+    font-family:var(--serif); font-weight:700; font-style:italic;
+    font-size:26px; line-height:1.15; margin:0 0 6px; color:var(--parchment); text-align:center; padding:0 16px;
+  }
+  .book-header{ text-align:center; padding: 22px 16px 8px;}
+  .book-header .sub{ font-size:12px; color:#9AA1B4;}
+  .toolbar{ display:flex; gap:10px; justify-content:center; padding:14px 22px 2px; flex-wrap:wrap;}
+  .pill-btn{
+    background:var(--ink-2); color:var(--parchment); border:1px solid rgba(201,162,75,0.3);
+    border-radius:20px; padding:8px 16px; font-size:13px; display:flex; align-items:center; gap:6px;
+  }
+  .about-card{
+    max-width:608px; margin:8px 16px 0; background:var(--ink-2); border-radius:14px;
+    padding:16px 18px; border:1px solid rgba(201,162,75,0.2);
+  }
+  .about-card h3{ font-family:var(--serif); font-style:italic; font-size:15px; color:var(--gold-soft); margin:0 0 8px;}
+  .about-card p{ font-size:13px; line-height:1.65; color:#C9CEDB; margin:0 0 10px;}
+  .chapter-list{ padding:18px 16px 20px; max-width:640px; margin:0 auto; width:100%;}
+  .chapter-card{
+    display:flex; gap:14px; align-items:flex-start;
+    background:var(--ink-2); border-radius:14px; padding:14px 16px; margin-bottom:10px;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+  .chapter-card:active{ transform:scale(0.98); }
+  .chapter-num{
+    flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+    background:rgba(201,162,75,0.14); color:var(--gold); border:1px solid rgba(201,162,75,0.4);
+    display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:14px; font-weight:700;
+  }
+  .chapter-info{flex:1; min-width:0;}
+  .chapter-title{ font-family:var(--serif); font-size:16px; margin:2px 0 4px; color:var(--parchment); font-weight:600;}
+  .chapter-snip{ font-size:12.5px; color:#9AA1B4; line-height:1.4; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
+  .chapter-meta{ font-size:10.5px; color:var(--gold); margin-top:6px; letter-spacing:0.04em;}
+  .read-dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); display:inline-block; margin-right:5px;}
+  footer.credit{ text-align:center; font-size:10.5px; color:#5C6178; padding:20px 0 12px;}
+
+  /* ---------- Reading view ---------- */
+  .read-header{
+    position:sticky; top:0; z-index:5; background:rgba(27,35,51,0.92); backdrop-filter:blur(6px);
+    padding:12px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(201,162,75,0.2);
+  }
+  .icon-btn{ background:none; border:none; color:var(--parchment); font-size:18px; padding:6px; line-height:1;}
+  .read-header-title{ flex:1; font-family:var(--serif); font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .progress-track{ height:3px; background:rgba(255,255,255,0.08); }
+  .progress-fill{ height:100%; background:var(--gold); transition:width 0.2s ease;}
+
+  .page-wrap{ display:flex; justify-content:center; padding: 18px 14px 30px; }
+  .page{
+    max-width:640px; width:100%; background:var(--parchment); color:var(--charcoal);
+    border-radius:16px; padding: 26px 22px 34px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .page.night{ background:#20242E; color:#DCE0EA; }
+  .chap-title-lg{ font-family:var(--serif); font-style:italic; font-size:22px; margin:0 0 18px; text-align:center;}
+  .para-heading{
+    font-family:var(--sans); text-transform:uppercase; letter-spacing:0.14em; font-size:11.5px;
+    color:var(--ember); font-weight:700; margin: 22px 0 10px;
+  }
+  .page.night .para-heading{ color:var(--gold-soft); }
+  .para-text{ font-family:var(--serif); font-size:17px; line-height:1.75; margin:0 0 14px; }
+  .chapter-image{ display:block; max-width:100%; height:auto; margin:18px auto; border-radius:6px; background:#fff; padding:10px; box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+  .page.night .chapter-image{ background:#2A2E38; }
+  .sent{ transition:background-color 0.25s ease, box-shadow 0.25s ease; border-radius:3px; }
+  .sent.active{ background: var(--gold-soft); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .page.night .sent.active{ background:#4A3C1E; box-shadow:0 0 0 3px #4A3C1E; color:#FFF3D6;}
+
+  .controls{
+    position:sticky; bottom:0; z-index:6;
+    background:var(--ink-2); border-top:1px solid rgba(201,162,75,0.25);
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  }
+  .controls-row1{ display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:8px;}
+  .play-btn{
+    width:52px; height:52px; border-radius:50%; border:none;
+    background:linear-gradient(180deg, var(--gold), #B58E3E); color:var(--ink);
+    font-size:20px; display:flex; align-items:center; justify-content:center;
+  }
+  .step-btn{ background:none; border:none; color:var(--parchment); font-size:22px; opacity:0.85;}
+  .controls-row2{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .mini-btn{ background:var(--ink); border:1px solid rgba(255,255,255,0.12); color:#C9CEDB; border-radius:10px; padding:6px 10px; font-size:11.5px;}
+  select.mini-select{ background:var(--ink); border:1px solid rgba(255,255,255,0.12); color:#C9CEDB; border-radius:10px; padding:6px 8px; font-size:11.5px; max-width:120px;}
+
+  /* ---------- Live the Chapter ---------- */
+  .ltc-wrap{ max-width:640px; margin:0 auto; padding:0 14px 24px;}
+  .ltc-step{
+    background:var(--ink-2); border-radius:14px; padding:16px 18px; margin-bottom:12px;
+    border:1px solid rgba(255,255,255,0.05);
+  }
+  .ltc-label{ display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:10px;}
+  .ltc-body{ font-family:var(--serif); font-size:15px; line-height:1.6; color:var(--parchment); font-style:italic;}
+  .ltc-q{ font-size:13.5px; color:#D8DCE6; margin:10px 0 4px;}
+  .ltc-textarea{
+    width:100%; background:var(--ink); border:1px solid rgba(255,255,255,0.12); color:var(--parchment);
+    border-radius:10px; padding:10px 12px; font-size:13.5px; font-family:var(--sans); min-height:52px; resize:vertical;
+  }
+  .ltc-check{ display:flex; align-items:center; gap:8px; font-size:13px; color:#D8DCE6; margin-top:10px;}
+  .ltc-check input{ width:18px; height:18px; accent-color:var(--gold);}
+  .ltc-quiz-item{ margin-bottom:12px;}
+  .ltc-quiz-q{ font-size:13.5px; color:var(--parchment); margin-bottom:6px;}
+  .ltc-reveal{ font-size:12.5px; color:var(--gold-soft);}
+  .ltc-soon{ font-size:12.5px; color:#8A90A3; font-style:italic;}
+  .complete-btn{ width:100%; margin-top:4px;}
+
+  /* ---------- Explore ---------- */
+  .search-wrap{ padding:14px 16px 90px; max-width:640px; margin:0 auto; width:100%;}
+  .search-input{
+    width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(201,162,75,0.3);
+    background:var(--ink-2); color:var(--parchment); font-size:15px;
+  }
+  .topic-grid{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .topic-chip{
+    background:var(--ink-2); border:1px solid rgba(201,162,75,0.3); color:var(--gold-soft);
+    border-radius:16px; padding:7px 14px; font-size:12.5px;
+  }
+  .topic-chip.active{ background:var(--gold); color:var(--ink); border-color:var(--gold);}
+  .result-card{ background:var(--ink-2); border-radius:12px; padding:12px 14px; margin-top:10px; }
+  .result-chap{ font-size:10.5px; color:var(--gold); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:4px;}
+  .result-snip{ font-size:13.5px; color:#D8DCE6; line-height:1.5;}
+  mark{ background:var(--gold-soft); color:var(--ink); padding:0 1px; border-radius:2px;}
+  .empty-state{ text-align:center; color:#8A90A3; font-size:13px; padding:40px 20px;}
+
+  /* ---------- Prayer / Journal ---------- */
+  .prayer-card{ background:var(--ink-2); border-radius:14px; padding:16px 18px; margin:0 16px 12px; border:1px solid rgba(201,162,75,0.15);}
+  .prayer-chap{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  .prayer-text{ font-family:var(--serif); font-style:italic; font-size:14.5px; line-height:1.6; color:var(--parchment);}
+  .journal-entry{ background:var(--ink-2); border-radius:14px; padding:14px 18px; margin:0 16px 10px; border:1px solid rgba(255,255,255,0.05);}
+  .journal-tag{ font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  .journal-text{ font-size:13.5px; color:#D8DCE6; line-height:1.5;}
+  .journal-date{ font-size:10px; color:#6B7086; margin-top:6px;}
+  .journal-compose{ margin:0 16px 16px; background:var(--ink-2); border-radius:14px; padding:14px 16px; border:1px solid rgba(255,255,255,0.05);}
+  .journal-cat-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+  .cat-chip{ background:var(--ink); border:1px solid rgba(255,255,255,0.12); color:#C9CEDB; border-radius:12px; padding:5px 11px; font-size:11px;}
+  .cat-chip.active{ background:var(--gold); color:var(--ink); border-color:var(--gold);}
+
+  /* ---------- Download ---------- */
+  .dl-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+
+  /* ---------- Confetti ---------- */
+  .confetti-layer{ position:fixed; inset:0; pointer-events:none; z-index:60; overflow:hidden;}
+  .confetti-piece{ position:absolute; top:-10px; border-radius:2px; animation: confettiFall 1.6s ease-in forwards;}
+  @keyframes confettiFall{ to{ transform: translateY(110vh) rotate(540deg); opacity:0.2;} }
+
+  /* ---------- Flip cover ---------- */
+  .flip-cover-stage{ position:fixed; inset:0; z-index:30; perspective:1800px; }
+  .flip-cover{
+    position:absolute; inset:0; transform-style:preserve-3d; transform-origin:left center;
+    transition: transform 1.05s cubic-bezier(.62,.08,.29,1);
+    cursor:pointer; z-index:20;
+  }
+  .flip-cover.open{ transform: rotateY(-178deg); pointer-events:none; }
+  .cover-face{
+    position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:40px 26px; text-align:center;
+  }
+  .cover-front{
+    background: radial-gradient(circle at 50% 18%, #2B3654, var(--ink) 68%);
+    box-shadow: inset 0 0 0 1px rgba(201,162,75,0.25), 8px 0 24px rgba(0,0,0,0.5);
+    border-radius: 4px 14px 14px 4px;
+  }
+  .cover-back{
+    background: linear-gradient(135deg, #EFE6D0, #E4D8B8);
+    transform: rotateY(180deg);
+    color: var(--charcoal);
+    border-radius: 14px 4px 4px 14px;
+  }
+  .cover-illustration{ width:64%; max-width:230px; margin-bottom:18px; }
+  .cover-title-front{ font-family:var(--serif); font-style:italic; font-weight:700; font-size:26px; line-height:1.18; color:var(--parchment); margin:0 0 8px;}
+  .cover-sub-front{ font-family:var(--serif); font-size:13px; color:var(--gold-soft); margin:0 0 14px; font-style:italic;}
+  .cover-series-front{ font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:#9AA1B4; border-top:1px solid rgba(201,162,75,0.3); border-bottom:1px solid rgba(201,162,75,0.3); padding:8px 0; margin-bottom:14px;}
+  .cover-author-front{ font-family:var(--serif); font-style:italic; font-size:14px; color:var(--gold);}
+  .tap-hint{
+    position:absolute; bottom:26px; left:0; right:0; text-align:center;
+    font-size:11px; color:#8A90A3; letter-spacing:0.06em;
+    animation: pulseHint 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseHint{ 0%,100%{opacity:0.45;} 50%{opacity:1;} }
+  .cover-back-title{ font-family:var(--sans); font-weight:700; letter-spacing:0.02em; font-size:13px; margin-bottom:4px;}
+
+  @media (prefers-reduced-motion: reduce){ .sent{ transition:none; } .flip-cover{ transition:none; } .tap-hint{ animation:none; } .home-flame{ animation:none; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="book-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/dist/index.iife.js"></script>
+<script>
+const h = React.createElement;
+const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+const BOOK = window.BOOK_DATA;
+const LS_BOOKMARK = 'ilc_bookmark_v2';
+const LS_SETTINGS = 'ilc_settings_v2';
+const LS_READ = 'ilc_read_v2';
+const LS_JOURNAL = 'ilc_journal_v2';
+const LS_STREAK = 'ilc_streak_v2';
+const LS_COMPLETED = 'ilc_completed_v2';
+
+// ---------- Chapter content (prayers / reflections / actions / quizzes) ----------
+// Only Chapter 1 is written so far — more will be added chapter by chapter.
+const CHAPTER_EXTRAS = {
+  ch1: {
+    prayer: "Lord, save me from being a mere believer moved only by what I see. Make me a true disciple — one who obeys You fully, not one who follows for the miracle and walks away before the cross. Let my faith be tested and found real.",
+    reflect: [
+      "What's the difference this chapter draws between a \"believer\" and a \"disciple\"?",
+      "Where in my own life have I settled for believing, without becoming obedient?",
+      "What was it about the disciples that made Jesus trust them with the Great Commission?",
+      "What would it look like for me to move from spectator to disciple this week?",
+      "Which verse from this chapter do I want to remember?"
+    ],
+    action: "Name one area where you've been \"believing\" without obeying. Take one concrete step toward obedience in it today.",
+    quiz: [
+      { q: "What feast was happening when Jesus cleansed the temple?", a: "Passover" },
+      { q: "According to the chapter, what did many \"believers\" base their belief on?", a: "Miracles, not the word of God" },
+      { q: "What did Jesus command the disciples to do in Matthew 28?", a: "Go and teach all nations" }
+    ]
+  }
+};
+
+const QUOTES = [
+  { text: "A great crowd, many converts, or \u201cbelievers\u201d gathered in a ministration is not the definition of success in ministry.", chapter: "The Feast Day" },
+  { text: "Those ministers who are disciples indeed will always be accompanied by the presence of God.", chapter: "The Feast Day" },
+  { text: "The basis of their belief was merely the miracles, not the word of God.", chapter: "The Feast Day" }
+];
+
+const TOPICS = ['Fear','Faith','Prayer','Purpose','Love','Forgiveness','Temptation','Wisdom','Discipleship'];
+
+const ABOUT_TEXT = [
+  "This book will show you how the life of God was killed in Adam and Eve by the poisonous juice in the forbidden fruit, while the life in its seed — the self-life, also known as human nature — germinated to replace the life of God originally placed inside their bodies. As a result, they began to transmit that life to their offspring.",
+  "As a child of Adam born with adamic nature, when your eyes suddenly open to see that your car is not as good as your colleagues' — a kind of nakedness you must cover for you not to be ashamed — you will cover up with the fig leaves of a loan to buy a good one, just as Adam and Eve covered their nakedness when it became a thing of shame to them."
+].join('\n\n');
+
+function splitSentences(text){
+  const raw = text.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g);
+  if(!raw) return [text];
+  return raw.map(s => s.trim()).filter(Boolean);
+}
+
+function buildChapterIndex(chapter){
+  const flat = [];
+  chapter.paragraphs.forEach((p, paraIdx) => {
+    if(p.type === 'image') return;
+    if(p.type === 'heading'){
+      flat.push({paraIdx, sentIdx:0, key:`${paraIdx}-0`, text:p.text, isHeading:true});
+    } else {
+      const sents = splitSentences(p.text);
+      sents.forEach((s, sentIdx) => {
+        flat.push({paraIdx, sentIdx, key:`${paraIdx}-${sentIdx}`, text:s, isHeading:false});
+      });
+    }
+  });
+  return flat;
+}
+
+function loadJSON(key, fallback){
+  try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+}
+function saveJSON(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+}
+function todayStr(){
+  return new Date().toISOString().slice(0,10);
+}
+function dailyPick(list){
+  const d = new Date();
+  const seed = d.getFullYear()*372 + d.getMonth()*31 + d.getDate();
+  return list[seed % list.length];
+}
+
+// ---------- Streak ----------
+function useStreak(){
+  const [streak, setStreak] = useState(() => loadJSON(LS_STREAK, {count:0, last:null}));
+  useEffect(() => {
+    const today = todayStr();
+    if(streak.last === today) return;
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    let next;
+    if(streak.last === yesterday){ next = {count: streak.count + 1, last: today}; }
+    else if(streak.last === null){ next = {count: 1, last: today}; }
+    else { next = {count: 1, last: today}; }
+    setStreak(next);
+    saveJSON(LS_STREAK, next);
+  }, []);
+  return streak;
+}
+
+function Confetti(){
+  const pieces = useMemo(() => Array.from({length:26}, (_,i) => ({
+    id:i, left: Math.random()*100, delay: Math.random()*0.4, size: 5 + Math.random()*5,
+    color: [ '#C9A24B', '#E7D2A0', '#8B4A3D', '#F5EEDD' ][i % 4]
+  })), []);
+  return h('div', {className:'confetti-layer'},
+    pieces.map(p => h('div', {
+      key:p.id, className:'confetti-piece',
+      style:{ left:p.left+'%', width:p.size, height:p.size*1.4, background:p.color, animationDelay:p.delay+'s' }
+    }))
+  );
+}
+
+// ---------- Original illustration ----------
+function TreeIllustration({ variant }){
+  const gold = '#C9A24B', ember = '#8B4A3D', leaf = variant === 'back' ? '#5B6B4D' : '#7C8F5E',
+        leafDark = variant === 'back' ? '#42503A' : '#576B45', trunk = variant === 'back' ? '#5C4A34' : '#4A3C2A';
+  return h('svg', {className:'cover-illustration', viewBox:'0 0 220 220'},
+    h('circle', {cx:110, cy:70, r:62, fill:leafDark, opacity:0.9}),
+    h('circle', {cx:75, cy:60, r:40, fill:leaf, opacity:0.9}),
+    h('circle', {cx:150, cy:58, r:44, fill:leaf, opacity:0.85}),
+    h('circle', {cx:110, cy:40, r:38, fill:leafDark, opacity:0.8}),
+    [[70,58],[95,80],[125,50],[150,75],[110,95],[85,40],[140,42]].map((p,i) =>
+      h('circle', {key:i, cx:p[0], cy:p[1], r:5.5, fill:gold})
+    ),
+    h('rect', {x:103, y:100, width:14, height:66, rx:5, fill:trunk}),
+    h('path', {
+      d:'M96 108 C 128 116, 92 132, 124 140 C 96 148, 128 160, 100 166',
+      stroke:gold, strokeWidth:4, fill:'none', strokeLinecap:'round'
+    }),
+    h('circle', {cx:97, cy:107, r:4, fill:gold}),
+    h('path', {d:'M110 166 C 95 178, 80 182, 62 190', stroke:trunk, strokeWidth:4, fill:'none', strokeLinecap:'round'}),
+    h('path', {d:'M110 166 C 125 178, 140 182, 158 190', stroke:trunk, strokeWidth:4, fill:'none', strokeLinecap:'round'}),
+    h('path', {d:'M110 166 L 110 194', stroke:trunk, strokeWidth:4, fill:'none', strokeLinecap:'round'}),
+    h('g', {transform:'translate(88 196) scale(0.85)', opacity:variant==='back'?0.9:0.75},
+      h('path', {
+        d:'M18 6 C10 -2 -2 2 -1 12 C0 20 10 27 18 33 C26 27 36 20 37 12 C38 2 26 -2 18 6 Z',
+        fill: ember, opacity:0.9
+      })
+    )
+  );
+}
+
+function FlameIcon({ size }){
+  return h('svg', {className:'home-flame', viewBox:'0 0 100 140', style:{width:size||36}},
+    h('path', {d:'M50 0 C65 35 85 55 65 80 C75 80 80 92 80 100 C80 122 65 140 50 140 C35 140 20 122 20 100 C20 92 25 80 35 80 C15 55 35 35 50 0 Z', fill:'#C9A24B'})
+  );
+}
+
+function FlipCover({ onOpen }){
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => { setOpen(true); setTimeout(onOpen, 1080); };
+  return h('div', {className:'flip-cover-stage'},
+    h('div', {className:'flip-cover' + (open ? ' open' : ''), onClick: () => !open && handleOpen()},
+      h('div', {className:'cover-face cover-front'},
+        h(TreeIllustration, {variant:'front'}),
+        h('h1', {className:'cover-title-front'}, 'The Incredible Life Change'),
+        h('p', {className:'cover-sub-front'}, '(From Human Nature to Divine Nature)'),
+        h('p', {className:'cover-series-front'}, "The Christian's Companion \u00b7 Series 1"),
+        h('p', {className:'cover-author-front'}, 'Kunle Bello'),
+        h('p', {className:'tap-hint'}, 'Tap to open')
+      ),
+      h('div', {className:'cover-face cover-back'},
+        h(TreeIllustration, {variant:'back'}),
+        h('p', {className:'cover-back-title'}, 'About the Book'),
+        h('p', {style:{fontSize:'11.5px', lineHeight:1.6, color:'#4A4030', maxWidth:'240px'}},
+          'Turn the page to begin your journey — read, reflect, pray, and grow, fully offline.')
+      )
+    )
+  );
+}
+
+// ============================================================
+// APP
+// ============================================================
+function App(){
+  const [tab, setTab] = useState('home'); // home | book | explore | prayer | journal
+  const [view, setView] = useState('list'); // list | reading (within book tab)
+  const [chapterId, setChapterId] = useState(null);
+  const [settings, setSettings] = useState(() => loadJSON(LS_SETTINGS, { fontSize: 17, rate: 1, voiceName: null, night: false }));
+  const [bookmark, setBookmark] = useState(() => loadJSON(LS_BOOKMARK, null));
+  const [readChapters, setReadChapters] = useState(() => loadJSON(LS_READ, {}));
+  const [completed, setCompleted] = useState(() => loadJSON(LS_COMPLETED, {}));
+  const [journal, setJournal] = useState(() => loadJSON(LS_JOURNAL, []));
+  const [hasOpenedBook, setHasOpenedBook] = useState(false);
+  const [confetti, setConfetti] = useState(false);
+  const streak = useStreak();
+
+  useEffect(() => { saveJSON(LS_SETTINGS, settings); }, [settings]);
+  useEffect(() => { saveJSON(LS_BOOKMARK, bookmark); }, [bookmark]);
+  useEffect(() => { saveJSON(LS_READ, readChapters); }, [readChapters]);
+  useEffect(() => { saveJSON(LS_COMPLETED, completed); }, [completed]);
+  useEffect(() => { saveJSON(LS_JOURNAL, journal); }, [journal]);
+
+  const openChapter = (id) => { setChapterId(id); setView('reading'); setTab('book'); };
+  const backToList = () => setView('list');
+
+  const addJournalEntry = (entry) => {
+    setJournal(j => [{ ...entry, id: Date.now(), date: new Date().toISOString() }, ...j]);
+  };
+
+  const markChapterComplete = (id) => {
+    if(!completed[id]){
+      setCompleted(c => ({...c, [id]: true}));
+      setConfetti(true);
+      setTimeout(() => setConfetti(false), 1700);
+    }
+  };
+
+  const challengeDays = Math.min(12, Object.keys(completed).length);
+
+  return h('div', {style:{display:'flex', flexDirection:'column', flex:1}},
+    confetti && h(Confetti),
+    view === 'reading' && chapterId
+      ? h(Reader, {
+          chapterId, settings, setSettings, bookmark, setBookmark,
+          onBack: backToList,
+          onFinishChapter: (id) => setReadChapters(r => ({...r, [id]: true})),
+          onMarkComplete: markChapterComplete,
+          completed, addJournalEntry
+        })
+      : h(React.Fragment, null,
+          h('div', {className:'app-body'},
+            tab === 'home' && h(Home, {
+              bookmark, streak, challengeDays, completed,
+              onContinue: () => bookmark && openChapter(bookmark.chapterId),
+              onGoBook: () => setTab('book')
+            }),
+            tab === 'book' && h('div', {style:{position:'relative'}},
+              h(BookTab, {
+                bookmark, onContinue: () => openChapter(bookmark.chapterId),
+                onOpenChapter: openChapter, readChapters, completed
+              }),
+              !hasOpenedBook && h(FlipCover, { onOpen: () => setHasOpenedBook(true) })
+            ),
+            tab === 'explore' && h(Explore, {}),
+            tab === 'prayer' && h(PrayerTab, { completed }),
+            tab === 'journal' && h(JournalTab, { journal, addJournalEntry })
+          ),
+          h(BottomNav, { tab, setTab })
+        )
+  );
+}
+
+function BottomNav({ tab, setTab }){
+  const items = [
+    ['home','\u2302','Home'],
+    ['book','\ud83d\udcd6','Book'],
+    ['explore','\ud83d\udd0e','Explore'],
+    ['prayer','\ud83d\ude4f','Prayer'],
+    ['journal','\u270d','Journal']
+  ];
+  return h('div', {className:'bottom-nav'},
+    items.map(([id, icon, label]) => h('button', {
+      key:id, className:'nav-btn' + (tab===id ? ' active' : ''), onClick:() => setTab(id)
+    },
+      h('span', {className:'nav-icon'}, icon),
+      h('span', null, label)
+    ))
+  );
+}
+
+// ---------- Home ----------
+function Home({ bookmark, streak, challengeDays, completed, onContinue, onGoBook }){
+  const quote = dailyPick(QUOTES);
+  const firstExtra = CHAPTER_EXTRAS.ch1;
+  const bmChapter = bookmark ? BOOK.chapters.find(c => c.id === bookmark.chapterId) : null;
+
+  return h('div', {className:'fade-in'},
+    h('div', {className:'home-header'},
+      h('div', {className:'home-flame-row'},
+        h(FlameIcon, {size:34}),
+        h('div', null,
+          h('p', {className:'home-eyebrow'}, 'Apostolic Movement'),
+          h('h2', {className:'home-greeting'}, 'My Journey With God'),
+          h('p', {className:'home-streak'}, streak.count > 0 ? ('\ud83d\udd25 ' + streak.count + '-day streak') : 'Open daily to start a streak')
+        )
+      )
+    ),
+    h('div', {className:'challenge-badge'},
+      h('div', {className:'challenge-ring', style:{'--pct': Math.round((challengeDays/12)*100)}},
+        h('span', null, challengeDays + '/12')
+      ),
+      h('div', null,
+        h('div', {style:{fontSize:'13px', color:'var(--parchment)', fontWeight:600}}, '12-Chapter Journey'),
+        h('div', {style:{fontSize:'11px', color:'#9AA1B4'}}, challengeDays >= 12 ? 'Completed \u2014 well done!' : (12-challengeDays) + ' chapters to go')
+      )
+    ),
+    bmChapter && h('div', {className:'continue-card', onClick:onContinue},
+      h('div', null,
+        h('p', {className:'cc-title'}, 'Continue Reading'),
+        h('p', {className:'cc-sub'}, bmChapter.title)
+      ),
+      h('span', {style:{color:'var(--gold)', fontSize:20}}, '\u25b6')
+    ),
+    h('div', {className:'today-grid'},
+      h('div', {className:'today-card'},
+        h('div', {className:'today-label'}, "Today's Word"),
+        h('div', {className:'today-body'}, '\u201c' + quote.text + '\u201d')
+      ),
+      h('div', {className:'today-card'},
+        h('div', {className:'today-label'}, "Today's Prayer"),
+        h('div', {className:'today-body'}, firstExtra ? firstExtra.prayer.slice(0,90) + '\u2026' : 'Added as chapters are completed.')
+      )
+    ),
+    h('div', {style:{padding:'0 16px'}},
+      h('button', {className:'btn-ghost', onClick:onGoBook}, 'Open the Book \u2192')
+    ),
+    h('footer', {className:'credit'}, 'The Incredible Life Change \u2014 Series 1 \u00b7 Written by Kunle Bello')
+  );
+}
+
+// ---------- Book tab (chapter list) ----------
+function BookTab({ bookmark, onContinue, onOpenChapter, readChapters, completed }){
+  return h('div', {className:'fade-in'},
+    h('div', {className:'book-header'},
+      h('p', {className:'cover-eyebrow'}, 'Apostolic Movement'),
+      h('h1', {className:'cover-title'}, BOOK.title),
+      h('p', {className:'sub'}, BOOK.chapters.length + ' chapters \u00b7 read, listen, reflect \u2014 fully offline')
+    ),
+    bookmark && h('button', {className:'continue-card', style:{width:'calc(100% - 32px)', border:'none', textAlign:'left'}, onClick:onContinue},
+      h('div', null,
+        h('p', {className:'cc-title'}, '\u25b6 Continue \u2014 ' + ((BOOK.chapters.find(c=>c.id===bookmark.chapterId)||{}).title || ''))
+      )
+    ),
+    h('div', {className:'about-card', style:{marginTop:'14px'}},
+      h('h3', null, 'About the Book'),
+      ABOUT_TEXT.split('\n\n').map((para, i) => h('p', {key:i}, para))
+    ),
+    h('div', {className:'about-card'},
+      h('h3', null, 'Download the Book'),
+      h('p', {style:{fontSize:'12px', color:'#9AA1B4', marginBottom:'10px'}}, 'Save a clean copy of the full book to your device \u2014 works offline once downloaded.'),
+      h('div', {className:'dl-row'},
+        h('button', {className:'btn-ghost', onClick: downloadBookOnlyPDF}, '\u2b07 PDF'),
+        h('button', {className:'btn-ghost', onClick: downloadBookOnlyWord}, '\u2b07 Word (.docx)')
+      )
+    ),
+    h('div', {className:'chapter-list'},
+      BOOK.chapters.map(c => h('div', {
+          key:c.id, className:'chapter-card', onClick:() => onOpenChapter(c.id)
+        },
+        h('div', {className:'chapter-num'}, completed[c.id] ? '\u2713' : c.num),
+        h('div', {className:'chapter-info'},
+          h('div', {className:'chapter-title'}, c.title),
+          h('div', {className:'chapter-snip'}, (c.paragraphs.find(p=>p.type==='text')||{text:''}).text),
+          h('div', {className:'chapter-meta'}, completed[c.id]
+            ? h(React.Fragment,null, h('span',{className:'read-dot'}), 'Chapter completed')
+            : (readChapters[c.id] ? 'In progress' : 'Tap to read or listen'))
+        )
+      ))
+    ),
+    h('footer', {className:'credit'}, 'The Incredible Life Change \u2014 Series 1 \u00b7 Written by Kunle Bello')
+  );
+}
+
+// ---------- Reader ----------
+function Reader({ chapterId, settings, setSettings, bookmark, setBookmark, onBack, onFinishChapter, onMarkComplete, completed, addJournalEntry }){
+  const chapter = useMemo(() => BOOK.chapters.find(c => c.id === chapterId), [chapterId]);
+  const flat = useMemo(() => buildChapterIndex(chapter), [chapter]);
+
+  const startPos = (bookmark && bookmark.chapterId === chapterId) ? bookmark.flatIndex : 0;
+  const [activeKey, setActiveKey] = useState(flat[startPos] ? flat[startPos].key : null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [voices, setVoices] = useState([]);
+  const cursorRef = useRef(startPos);
+  const cancelledRef = useRef(false);
+
+  useEffect(() => {
+    function loadVoices(){
+      const v = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+      setVoices(v.length ? v : window.speechSynthesis.getVoices());
+    }
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    return () => { window.speechSynthesis.onvoiceschanged = null; };
+  }, []);
+
+  useEffect(() => {
+    return () => { cancelledRef.current = true; window.speechSynthesis.cancel(); };
+  }, [chapterId]);
+
+  const scrollToActive = (key) => {
+    const el = document.getElementById('sent-' + key);
+    if(el) el.scrollIntoView({block:'center', behavior:'smooth'});
+  };
+
+  const speakFrom = useCallback((startFlatIdx) => {
+    window.speechSynthesis.cancel();
+    cancelledRef.current = false;
+    let idx = startFlatIdx;
+
+    function speakNext(){
+      if(cancelledRef.current) return;
+      while(idx < flat.length && flat[idx].isHeading) idx++;
+      if(idx >= flat.length){
+        setIsPlaying(false);
+        onFinishChapter(chapterId);
+        return;
+      }
+      const node = flat[idx];
+      cursorRef.current = idx;
+      setActiveKey(node.key);
+      scrollToActive(node.key);
+      setBookmark({chapterId, flatIndex: idx});
+
+      const utter = new SpeechSynthesisUtterance(node.text);
+      utter.rate = settings.rate;
+      if(settings.voiceName){
+        const v = voices.find(v => v.name === settings.voiceName);
+        if(v) utter.voice = v;
+      }
+      utter.onend = () => { if(!cancelledRef.current){ idx += 1; speakNext(); } };
+      utter.onerror = () => { if(!cancelledRef.current){ idx += 1; speakNext(); } };
+      window.speechSynthesis.speak(utter);
+    }
+    speakNext();
+  }, [flat, settings.rate, settings.voiceName, voices, chapterId]);
+
+  const handlePlayPause = () => {
+    if(isPlaying){ window.speechSynthesis.pause(); setIsPlaying(false); }
+    else if(window.speechSynthesis.paused){ window.speechSynthesis.resume(); setIsPlaying(true); }
+    else { setIsPlaying(true); speakFrom(cursorRef.current); }
+  };
+
+  const step = (dir) => {
+    window.speechSynthesis.cancel();
+    let idx = cursorRef.current + dir;
+    while(idx >=0 && idx < flat.length && flat[idx].isHeading) idx += dir;
+    idx = Math.max(0, Math.min(flat.length-1, idx));
+    cursorRef.current = idx;
+    setActiveKey(flat[idx].key);
+    scrollToActive(flat[idx].key);
+    setBookmark({chapterId, flatIndex: idx});
+    if(isPlaying){ speakFrom(idx); }
+  };
+
+  const cycleRate = () => {
+    const rates = [0.75, 1, 1.25, 1.5];
+    const next = rates[(rates.indexOf(settings.rate)+1) % rates.length];
+    setSettings(s => ({...s, rate: next}));
+    if(isPlaying){ speakFrom(cursorRef.current); }
+  };
+
+  const progressPct = flat.length ? Math.round((cursorRef.current / Math.max(1,flat.length-1)) * 100) : 0;
+  const night = settings.night;
+
+  return h('div', {className:'fade-in'},
+    h('div', {className:'read-header'},
+      h('button', {className:'icon-btn', onClick: () => { window.speechSynthesis.cancel(); onBack(); }}, '\u2190'),
+      h('div', {className:'read-header-title'}, chapter.title),
+      h('button', {className:'icon-btn', onClick: () => setSettings(s=>({...s, night: !s.night}))}, night ? '\u2600' : '\u263e')
+    ),
+    h('div', {className:'progress-track'}, h('div', {className:'progress-fill', style:{width: progressPct + '%'}})),
+    h('div', {className:'page-wrap' + (night?' night':'')},
+      h('div', {className:'page' + (night?' night':'')},
+        h('h2', {className:'chap-title-lg'}, chapter.title),
+        renderParagraphs(chapter, flat, activeKey, settings.fontSize)
+      )
+    ),
+    h('div', {className:'controls'},
+      h('div', {className:'controls-row1'},
+        h('button', {className:'step-btn', onClick:() => step(-1)}, '\u23ee'),
+        h('button', {className:'play-btn', onClick:handlePlayPause}, isPlaying ? '\u23f8' : '\u25b6'),
+        h('button', {className:'step-btn', onClick:() => step(1)}, '\u23ed')
+      ),
+      h('div', {className:'controls-row2'},
+        h('button', {className:'mini-btn', onClick:cycleRate}, settings.rate + '\u00d7'),
+        h('button', {className:'mini-btn', onClick:() => setSettings(s=>({...s, fontSize: Math.max(14, s.fontSize-1)}))}, 'A\u2212'),
+        h('button', {className:'mini-btn', onClick:() => setSettings(s=>({...s, fontSize: Math.min(24, s.fontSize+1)}))}, 'A+'),
+        voices.length > 0 && h('select', {
+            className:'mini-select', value: settings.voiceName || '',
+            onChange: e => setSettings(s=>({...s, voiceName: e.target.value || null}))
+          },
+          h('option', {value:''}, 'Default voice'),
+          voices.map(v => h('option', {key:v.name, value:v.name}, v.name))
+        )
+      )
+    ),
+    h(LiveTheChapter, { chapter, completed, onMarkComplete, addJournalEntry })
+  );
+}
+
+function renderParagraphs(chapter, flat, activeKey, fontSize){
+  const byPara = {};
+  flat.forEach(f => { (byPara[f.paraIdx] = byPara[f.paraIdx] || []).push(f); });
+  return chapter.paragraphs.map((p, paraIdx) => {
+    const sents = byPara[paraIdx] || [];
+    if(p.type === 'image'){
+      return h('img', { key:paraIdx, src:p.src, alt:p.alt || '', className:'chapter-image' });
+    }
+    if(p.type === 'heading'){
+      const f = sents[0];
+      return h('div', { key:paraIdx, id:'sent-' + (f?f.key:paraIdx), className:'para-heading' }, p.text);
+    }
+    return h('p', {key:paraIdx, className:'para-text', style:{fontSize: fontSize + 'px'}},
+      sents.map(f => h('span', {
+        key:f.key, id:'sent-' + f.key, className:'sent' + (f.key === activeKey ? ' active' : '')
+      }, f.text + ' '))
+    );
+  });
+}
+
+// ---------- Live the Chapter: Reflect / Pray / Act / Record ----------
+function LiveTheChapter({ chapter, completed, onMarkComplete, addJournalEntry }){
+  const extra = CHAPTER_EXTRAS[chapter.id];
+  const [answers, setAnswers] = useState(() => Array((extra && extra.reflect.length) || 0).fill(''));
+  const [prayed, setPrayed] = useState(false);
+  const [acted, setActed] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+
+  const recordAndComplete = () => {
+    if(extra){
+      answers.forEach((a, i) => {
+        if(a.trim()){
+          addJournalEntry({ category:'Reflection', text: a.trim(), chapterTitle: chapter.title, chapterId: chapter.id, prompt: extra.reflect[i] });
+        }
+      });
+    }
+    onMarkComplete(chapter.id);
+  };
+
+  return h('div', {className:'ltc-wrap'},
+    h('div', {className:'section-title'}, 'Live the Chapter'),
+    h('div', {className:'ltc-step'},
+      h('div', {className:'ltc-label'}, '\ud83d\ude4f Pray This'),
+      extra
+        ? h(React.Fragment, null,
+            h('p', {className:'ltc-body'}, '\u201c' + extra.prayer + '\u201d'),
+            h('label', {className:'ltc-check'},
+              h('input', {type:'checkbox', checked:prayed, onChange:e=>setPrayed(e.target.checked)}),
+              'I prayed this'
+            )
+          )
+        : h('p', {className:'ltc-soon'}, 'A prayer for this chapter is coming soon.')
+    ),
+    h('div', {className:'ltc-step'},
+      h('div', {className:'ltc-label'}, '\ud83e\udde0 What Did I Learn?'),
+      extra
+        ? extra.reflect.map((q, i) => h('div', {key:i},
+            h('div', {className:'ltc-q'}, q),
+            h('textarea', {
+              className:'ltc-textarea', value:answers[i],
+              onChange:e => setAnswers(a => a.map((v,idx)=> idx===i ? e.target.value : v)),
+              placeholder:'Write your answer\u2026'
+            })
+          ))
+        : h('p', {className:'ltc-soon'}, 'Reflection questions for this chapter are coming soon.')
+    ),
+    h('div', {className:'ltc-step'},
+      h('div', {className:'ltc-label'}, '\ud83c\udfaf Apply It Today'),
+      extra
+        ? h(React.Fragment, null,
+            h('p', {className:'ltc-body'}, extra.action),
+            h('label', {className:'ltc-check'},
+              h('input', {type:'checkbox', checked:acted, onChange:e=>setActed(e.target.checked)}),
+              "I completed today's action"
+            )
+          )
+        : h('p', {className:'ltc-soon'}, "Today's action for this chapter is coming soon.")
+    ),
+    extra && h('div', {className:'ltc-step'},
+      h('div', {className:'ltc-label'}, '\ud83e\udde9 Test Yourself'),
+      !showQuiz
+        ? h('button', {className:'btn-ghost', onClick:() => setShowQuiz(true)}, 'Start quiz')
+        : extra.quiz.map((item, i) => h(QuizItem, {key:i, item}))
+    ),
+    h('button', {className:'btn-gold complete-btn', onClick:recordAndComplete},
+      completed[chapter.id] ? '\u2713 Chapter Completed \u2014 Update Journal' : 'Mark Chapter Complete & Save to Journal'
+    )
+  );
+}
+
+function QuizItem({ item }){
+  const [revealed, setRevealed] = useState(false);
+  return h('div', {className:'ltc-quiz-item'},
+    h('div', {className:'ltc-quiz-q'}, item.q),
+    revealed
+      ? h('div', {className:'ltc-reveal'}, '\u2713 ' + item.a)
+      : h('button', {className:'mini-btn', onClick:() => setRevealed(true)}, 'Reveal answer')
+  );
+}
+
+// ---------- Explore ----------
+function Explore(){
+  const [q, setQ] = useState('');
+  const [activeTopic, setActiveTopic] = useState(null);
+
+  const effectiveQuery = activeTopic || q;
+  const results = useMemo(() => {
+    if(effectiveQuery.trim().length < 2) return [];
+    const needle = effectiveQuery.trim().toLowerCase();
+    const out = [];
+    for(const c of BOOK.chapters){
+      for(const p of c.paragraphs){
+        if(p.type !== 'text') continue;
+        const low = p.text.toLowerCase();
+        const idx = low.indexOf(needle);
+        if(idx !== -1){
+          const start = Math.max(0, idx-50);
+          const end = Math.min(p.text.length, idx+needle.length+70);
+          out.push({
+            chapterId: c.id, chapterTitle: c.title,
+            snippet: (start>0?'\u2026':'') + p.text.slice(start, end) + (end<p.text.length?'\u2026':'')
+          });
+          if(out.length >= 40) return out;
+        }
+      }
+    }
+    return out;
+  }, [effectiveQuery]);
+
+  return h('div', {className:'fade-in'},
+    h('div', {className:'section-title'}, 'Explore the Book'),
+    h('div', {className:'search-wrap', style:{paddingTop:0}},
+      h('input', {
+        className:'search-input', placeholder:'Search the book\u2026', value:q,
+        onChange: e => { setQ(e.target.value); setActiveTopic(null); }
+      }),
+      h('div', {className:'topic-grid'},
+        TOPICS.map(t => h('button', {
+          key:t, className:'topic-chip' + (activeTopic===t ? ' active' : ''),
+          onClick: () => { setActiveTopic(activeTopic===t ? null : t); setQ(''); }
+        }, t))
+      ),
+      effectiveQuery.trim().length >= 2 && results.length === 0 && h('div', {className:'empty-state'}, 'No matches found.'),
+      results.map((r, i) => h('div', {key:i, className:'result-card'},
+        h('div', {className:'result-chap'}, r.chapterTitle),
+        h('div', {className:'result-snip'}, highlightMatch(r.snippet, effectiveQuery))
+      ))
+    )
+  );
+}
+
+function highlightMatch(text, q){
+  const parts = text.split(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'ig'));
+  return parts.map((part, i) => part.toLowerCase() === q.toLowerCase()
+    ? h('mark', {key:i}, part) : part);
+}
+
+// ---------- Prayer tab ----------
+function PrayerTab({ completed }){
+  const chaptersWithPrayers = BOOK.chapters.filter(c => CHAPTER_EXTRAS[c.id]);
+  const [wisdom, setWisdom] = useState(null);
+  return h('div', {className:'fade-in'},
+    h('div', {className:'section-title'}, 'Prayers'),
+    h('div', {style:{padding:'0 16px 12px'}},
+      h('button', {className:'btn-gold', onClick:() => setWisdom(QUOTES[Math.floor(Math.random()*QUOTES.length)])},
+        '\u2728 Give Me a Word')
+    ),
+    wisdom && h('div', {className:'prayer-card'},
+      h('div', {className:'prayer-chap'}, wisdom.chapter),
+      h('div', {className:'prayer-text'}, '\u201c' + wisdom.text + '\u201d')
+    ),
+    chaptersWithPrayers.length === 0
+      ? h('div', {className:'empty-state'}, 'Prayers are added as each chapter is completed.')
+      : chaptersWithPrayers.map(c => h('div', {key:c.id, className:'prayer-card'},
+          h('div', {className:'prayer-chap'}, c.title),
+          h('div', {className:'prayer-text'}, '\u201c' + CHAPTER_EXTRAS[c.id].prayer + '\u201d')
+        ))
+  );
+}
+
+// ---------- Journal tab ----------
+const JOURNAL_CATS = ['Prayer','Reflection','Testimony','Gratitude','Lesson','Question','Commitment'];
+
+function JournalTab({ journal, addJournalEntry }){
+  const [cat, setCat] = useState('Reflection');
+  const [text, setText] = useState('');
+
+  const submit = () => {
+    if(!text.trim()) return;
+    addJournalEntry({ category:cat, text:text.trim() });
+    setText('');
+  };
+
+  return h('div', {className:'fade-in'},
+    h('div', {className:'section-title'}, 'My Journal'),
+    h('div', {className:'journal-compose'},
+      h('div', {className:'journal-cat-row'},
+        JOURNAL_CATS.map(c => h('button', {
+          key:c, className:'cat-chip' + (cat===c ? ' active' : ''), onClick:() => setCat(c)
+        }, c))
+      ),
+      h('textarea', {
+        className:'ltc-textarea', value:text, onChange:e=>setText(e.target.value),
+        placeholder:'Write a ' + cat.toLowerCase() + '\u2026'
+      }),
+      h('div', {style:{marginTop:8}}, h('button', {className:'btn-gold', onClick:submit}, 'Save Entry'))
+    ),
+    journal.length === 0 && h('div', {className:'empty-state'}, 'Your reflections, prayers, and notes will appear here.'),
+    journal.map(e => h('div', {key:e.id, className:'journal-entry'},
+      h('div', {className:'journal-tag'}, e.category + (e.chapterTitle ? ' \u00b7 ' + e.chapterTitle : '')),
+      e.prompt && h('div', {style:{fontSize:'11.5px', color:'#9AA1B4', marginBottom:4, fontStyle:'italic'}}, e.prompt),
+      h('div', {className:'journal-text'}, e.text),
+      h('div', {className:'journal-date'}, new Date(e.date).toLocaleDateString())
+    )),
+    h('div', {style:{padding:'0 16px 20px'}},
+      h('div', {className:'dl-row'},
+        h('button', {className:'btn-ghost', onClick: () => downloadBookWithNotes(journal)}, '\u2b07 PDF \u2014 Book + My Notes'),
+        h('button', {className:'btn-ghost', onClick: () => downloadBookWithNotesWord(journal)}, '\u2b07 Word \u2014 Book + My Notes')
+      )
+    )
+  );
+}
+
+// ---------- Downloads ----------
+function buildFullText(){
+  let out = BOOK.title + '\n\n';
+  BOOK.chapters.forEach(c => {
+    out += 'CHAPTER ' + c.num + ': ' + c.title + '\n\n';
+    c.paragraphs.forEach(p => { out += p.text + '\n\n'; });
+  });
+  return out;
+}
+
+let _pdfFontCache = null;
+async function loadPdfFont(doc){
+  if(!_pdfFontCache){
+    const resp = await fetch('fonts/DejaVuSans.ttf');
+    const buf = await resp.arrayBuffer();
+    let binary = '';
+    const bytes = new Uint8Array(buf);
+    const chunk = 0x8000;
+    for(let i = 0; i < bytes.length; i += chunk){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    _pdfFontCache = btoa(binary);
+  }
+  doc.addFileToVFS('DejaVuSans.ttf', _pdfFontCache);
+  doc.addFont('DejaVuSans.ttf', 'DejaVuSans', 'normal');
+  doc.setFont('DejaVuSans');
+  doc.setFontSize(11);
+}
+
+async function downloadBookOnlyPDF(){
+  try{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    await loadPdfFont(doc);
+    const text = buildFullText();
+    const lines = doc.splitTextToSize(text, 180);
+    let y = 20;
+    lines.forEach(line => {
+      if(y > 280){ doc.addPage(); doc.setFont('DejaVuSans'); y = 20; }
+      doc.text(line, 15, y);
+      y += 7;
+    });
+    doc.save('the-incredible-life-change.pdf');
+  }catch(e){ alert('Download failed: ' + e.message); }
+}
+
+async function buildWordDoc(withNotes, journal){
+  const { Document, Paragraph, TextRun, HeadingLevel, Packer } = window.docx;
+  const children = [
+    new Paragraph({ text: BOOK.title, heading: HeadingLevel.TITLE }),
+    new Paragraph({ children: [ new TextRun({ text: 'Written by Kunle Bello', italics: true }) ] })
+  ];
+  BOOK.chapters.forEach(c => {
+    children.push(new Paragraph({ text: 'Chapter ' + c.num + ': ' + c.title, heading: HeadingLevel.HEADING_1, pageBreakBefore: true }));
+    c.paragraphs.forEach(p => {
+      children.push(new Paragraph({
+        text: p.text,
+        heading: p.type === 'heading' ? HeadingLevel.HEADING_3 : undefined
+      }));
+    });
+  });
+  if(withNotes && journal && journal.length){
+    children.push(new Paragraph({ text: 'My Journal', heading: HeadingLevel.HEADING_1, pageBreakBefore: true }));
+    journal.slice().reverse().forEach(e => {
+      children.push(new Paragraph({
+        heading: HeadingLevel.HEADING_3,
+        children: [ new TextRun({ text: '[' + e.category + (e.chapterTitle ? (' \u2014 ' + e.chapterTitle) : '') + '] ' + new Date(e.date).toLocaleDateString() }) ]
+      }));
+      if(e.prompt) children.push(new Paragraph({ children: [ new TextRun({ text: e.prompt, italics: true }) ] }));
+      children.push(new Paragraph({ text: e.text }));
+    });
+  }
+  const doc = new Document({ sections: [{ children }] });
+  return Packer.toBlob(doc);
+}
+
+function triggerBlobDownload(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function downloadBookOnlyWord(){
+  try{
+    const blob = await buildWordDoc(false, null);
+    triggerBlobDownload(blob, 'the-incredible-life-change.docx');
+  }catch(e){ alert('Download failed: ' + e.message); }
+}
+
+async function downloadBookWithNotesWord(journal){
+  try{
+    const blob = await buildWordDoc(true, journal);
+    triggerBlobDownload(blob, 'the-incredible-life-change-with-notes.docx');
+  }catch(e){ alert('Download failed: ' + e.message); }
+}
+
+async function downloadBookWithNotes(journal){
+  try{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    await loadPdfFont(doc);
+    let text = buildFullText();
+    text += '\n\nMY JOURNAL\n\n';
+    journal.slice().reverse().forEach(e => {
+      text += '[' + e.category + (e.chapterTitle ? ' - ' + e.chapterTitle : '') + '] ' + new Date(e.date).toLocaleDateString() + '\n' + e.text + '\n\n';
+    });
+    const lines = doc.splitTextToSize(text, 180);
+    let y = 20;
+    lines.forEach(line => {
+      if(y > 280){ doc.addPage(); doc.setFont('DejaVuSans'); y = 20; }
+      doc.text(line, 15, y);
+      y += 7;
+    });
+    doc.save('the-incredible-life-change-with-notes.pdf');
+  }catch(e){ alert('Download failed: ' + e.message); }
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
