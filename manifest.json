@@ -1,7 +1,7 @@
 {
-  "name": "The Incredible Life Change — Series 1",
-  "short_name": "Life Change",
-  "description": "Offline read-aloud edition of The Incredible Life Change by Kunle Bello",
+  "name": "Ìyípadà Ìyanu Ìwàláàyè — Ìtòlẹ́sẹẹsẹ 1",
+  "short_name": "Ìyípadà Ìyanu",
+  "description": "Ìwé Ìyípadà Ìyanu Ìwàláàyè ní èdè Yorùbá, tí ń ṣiṣẹ́ láìsí Íńtánẹ́ẹ̀tì",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,4 +1,4 @@
-$root = "C:\Users\NIPOST 17\Documents\incredible\incredible-life-change-app-1"
+$root = "C:\Users\NIPOST 17\Documents\incredible\incredible-life-change-yoruba-app-1"
 $prefix = "http://localhost:8000/"
 $mime = @{
   ".html"="text/html"; ".js"="text/javascript"; ".json"="application/json";

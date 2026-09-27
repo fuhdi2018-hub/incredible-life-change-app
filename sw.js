@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ilc-book-v1';
+const CACHE_NAME = 'ilc-book-yo-v1';
 const PRECACHE = [
   './',
   './index.html',
