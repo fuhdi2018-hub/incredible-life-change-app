@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="yo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 1 Voice Spike — Yoruba TTS check</title>
+<style>
+  :root{ --ink:#1B2333; --ink-2:#242E44; --parchment:#F5EEDD; --gold:#C9A24B; --gold-soft:#E7D2A0;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:ui-serif,Georgia,"Iowan Old Style","Palatino Linotype",serif; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--ink);color:var(--parchment);font-family:var(--sans);padding:28px 18px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-family:var(--serif);font-style:italic;font-size:22px;margin:0 0 4px;}
+  .sub{font-size:12px;color:#9AA1B4;margin:0 0 18px;}
+  h2{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--gold-soft);margin:24px 0 10px;}
+  .card{background:var(--ink-2);border-radius:14px;padding:14px 16px;border:1px solid rgba(255,255,255,0.06);margin-bottom:12px;}
+  .btn{background:linear-gradient(180deg,#E7D2A0,var(--gold) 55%,#B58E3E);color:#1B2333;border:2px solid #E7D2A0;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:800;cursor:pointer;margin:4px 8px 4px 0;}
+  .btn2{background:var(--ink-2);border:2px solid var(--gold);color:var(--parchment);border-radius:12px;padding:11px 18px;font-size:13.5px;font-weight:700;cursor:pointer;margin:4px 8px 4px 0;}
+  select,input[type=text]{background:var(--ink);border:1px solid rgba(255,255,255,0.16);color:var(--parchment);border-radius:10px;padding:9px 12px;font-size:13px;max-width:100%;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  th{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;}
+  .yo{color:var(--gold-soft);font-weight:700;}
+  .none{color:#8A90A3;font-style:italic;}
+  ol,ul{font-size:13px;line-height:1.65;color:#D8DCE6;}
+  code{background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:6px;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Phase 1 — Yoruba voice spike</h1>
+  <p class="sub">Goal: find on-device <code>yo</code> voices. Open this page on each target device/browser, then report back.</p>
+
+  <h2>1. Voices on this device</h2>
+  <div class="card">
+    <div><button class="btn2" id="refresh" type="button">↻ Reload voices</button></div>
+    <p id="summary" class="none">Loading…</p>
+    <table id="vtable" hidden><thead><tr><th>Name</th><th>Lang</th><th>Local?</th><th>Default?</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <h2>2. Speak test</h2>
+  <div class="card">
+    <div><label for="voice">Voice:</label><br><select id="voice"><option value="">Loading…</option></select></div>
+    <p style="margin:12px 0 4px"><button class="btn" id="sayYo" type="button">▶ Ka Yorùbá</button>
+    <button class="btn2" id="sayEn" type="button">▶ English check</button>
+    <button class="btn2" id="stop" type="button">⏹ Stop</button></p>
+    <p class="sub" id="spoken"></p>
+  </div>
+
+  <h2>3. Report back (copy this)</h2>
+  <div class="card"><ol>
+    <li>Device + browser (e.g. Android Chrome, iPhone Safari, Windows Edge): …</li>
+    <li>Yoruba (<code>yo</code>) voices found: … (or “none”)</li>
+    <li>Yoruba sample sounded: natural / robotic / wrong language / silent?</li>
+    <li>Decision: on-device OK, or need cloud TTS?</li>
+  </ol></div>
+</div>
+<script>
+var YO_TEXT = "Jésù wá gẹ́gẹ́ bí alátúnṣe ńlá. Ìtara ilé rẹ ti jẹ mí run.";
+var EN_TEXT = "Jesus came as a great reformer. The zeal of thine house hath eaten me up.";
+var voices = [];
+function load(){
+  voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+  var tb = document.querySelector("#vtable tbody");
+  tb.innerHTML = "";
+  voices.forEach(function(v){
+    var tr = document.createElement("tr");
+    if ((v.lang||"").toLowerCase().indexOf("yo") === 0) tr.className = "yo";
+    tr.innerHTML = "<td></td><td></td><td></td><td></td>";
+    tr.children[0].textContent = v.name;
+    tr.children[1].textContent = v.lang;
+    tr.children[2].textContent = v.localService ? "yes" : "no";
+    tr.children[3].textContent = v.default ? "yes" : "no";
+    tb.appendChild(tr);
+  });
+  document.getElementById("vtable").hidden = !voices.length;
+  var yo = voices.filter(function(v){ return (v.lang||"").toLowerCase().indexOf("yo") === 0; });
+  document.getElementById("summary").textContent =
+    voices.length + " voices total, " + yo.length + " Yoruba (yo).";
+  var sel = document.getElementById("voice");
+  sel.innerHTML = "";
+  var auto = yo[0] || voices[0];
+  voices.forEach(function(v){
+    var o = document.createElement("option");
+    o.value = v.name; o.textContent = v.name + " (" + v.lang + ")";
+    if (auto && v.name === auto.name) o.selected = true;
+    sel.appendChild(o);
+  });
+  if (!voices.length) sel.innerHTML = "<option value=''>No voices</option>";
+}
+function speak(text, lang){
+  if (!window.speechSynthesis) { alert("No speechSynthesis here."); return; }
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  var name = document.getElementById("voice").value;
+  var v = voices.filter(function(x){ return x.name === name; })[0];
+  if (v) u.voice = v;
+  u.rate = 1;
+  document.getElementById("spoken").textContent = "Speaking with: " + (v ? v.name + " (" + v.lang + ")" : "default") + " lang=" + lang;
+  speechSynthesis.speak(u);
+}
+document.getElementById("refresh").onclick = load;
+document.getElementById("sayYo").onclick = function(){ speak(YO_TEXT, "yo-NG"); };
+document.getElementById("sayEn").onclick = function(){ speak(EN_TEXT, "en-US"); };
+document.getElementById("stop").onclick = function(){ if (window.speechSynthesis) speechSynthesis.cancel(); };
+if (window.speechSynthesis) { load(); speechSynthesis.onvoiceschanged = load; }
+else document.getElementById("summary").textContent = "speechSynthesis not supported here.";
+</script>
+</body>
+</html>
